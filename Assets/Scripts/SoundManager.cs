@@ -3,21 +3,37 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SoundManager : Singleton<SoundManager>
+public class SoundManager : MonoBehaviour
 {
+
+    private static SoundManager _instance;
+    public static SoundManager Instance { get { return _instance; } }
+    private void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+        }
+        DontDestroyOnLoad(_instance.gameObject);
+    }
+
     [SerializeField] private AudioSource background = null;
     [SerializeField] private AudioSource rewind = null;
     [SerializeField] private AudioClip clickSound = null;
     private bool isForward = true;
 
-    private void Awake()
-    {
-        DontDestroyOnLoad(gameObject);
-    }
-
     public void Click()
     {
-        rewind.Stop();
+        if (!isForward)
+        {
+            rewind.Stop();
+            isForward = true;
+            StartCoroutine(PlayForward());
+        }
         rewind.PlayOneShot(clickSound);
     }
 

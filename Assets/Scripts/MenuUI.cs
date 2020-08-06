@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class MenuUI: MonoBehaviour
 {
-    [SerializeField] private RectTransform startButton=null, modePanel=null;
+    [SerializeField] private RectTransform menuPanel=null, levelPanel=null;
     [SerializeField] private VolumeProfile postProcess = null;
     private UnityEngine.Rendering.Universal.LensDistortion distortion;
     private void Start()
@@ -33,25 +33,27 @@ public class MenuUI: MonoBehaviour
     public void OnPlayButtonClick()
     {
         Camera.main.DOShakePosition(0.1f);
-        startButton.DOLocalMoveX(-1500, 0.5f);
-        modePanel.DOLocalMoveX(0, 0.5f);
+        menuPanel.DOLocalMoveX(-1500, 0.5f);
+        levelPanel.DOLocalMoveX(0, 0.5f);
         SoundManager.Instance.Click();
     }
 
-    public void OnLevelModeButtonClick()
+    public void OnLevelButtonClick(string levelName)
     {
         distortion.xMultiplier.value = 1;
         distortion.yMultiplier.value = 1;
         SoundManager.Instance.Click();
-        StartCoroutine(DistortionDecrease(-1f, "Level1"));
+        StartCoroutine(DistortionDecrease(-1f,levelName));
 
     }
-
-    public void OnEndlessModeButtonClick()
+  
+    public void OnCreditsButtonClick()
     {
-        distortion.xMultiplier.value = 1;
-        distortion.yMultiplier.value = 1;
-        SoundManager.Instance.Click();
-        StartCoroutine(DistortionDecrease(-1f,"Endless"));
+        SceneManager.LoadScene("Credits");
+    }
+
+    public void OnQuitButtonClick()
+    {
+        Application.Quit();
     }
 }

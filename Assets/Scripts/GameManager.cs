@@ -10,7 +10,7 @@ public class GameManager : Singleton<GameManager>
 {
     [SerializeField] private VolumeProfile postProcess = null;
     [SerializeField] private GameObject rewindText = null;
-    [SerializeField] private GameObject losePanel = null, winPanel = null;
+    [SerializeField] private GameObject losePanel = null, winPanel = null,pausePanel = null;
     [SerializeField] private int neededCircles = 0;
     [SerializeField] private LineRenderer line = null;
     [SerializeField] private GameObject circle = null;
@@ -23,6 +23,7 @@ public class GameManager : Singleton<GameManager>
     private List<CircleMove> circles;
     private Camera cam;
     private bool died= false;
+    private bool isPaused=false;
 
     private void Start()
     {
@@ -46,6 +47,18 @@ public class GameManager : Singleton<GameManager>
     private void Update()
     {
         if (died) return;
+        if(Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.P))
+        {
+            isPaused = !isPaused;
+            if (isPaused)
+            {
+                pausePanel.transform.DOLocalMoveY(0, 0.25f).OnComplete(()=>Time.timeScale = 0);
+            }
+            else
+            {
+                pausePanel.transform.DOLocalMoveY(900, 0.25f).OnComplete(() => Time.timeScale = 1);
+            }
+        }
         if (Input.GetKeyDown(KeyCode.Space))
         {
             ChangeState();
@@ -97,7 +110,6 @@ public class GameManager : Singleton<GameManager>
         cam.DOOrthoSize(2, 0.5f);
         cam.transform.DOMove(zoomPos, 0.5f).OnComplete(()=>
         {
-            losePanel.SetActive(true);
             losePanel.transform.DOLocalMoveX(0, 0.25f);
         });
     }
@@ -109,9 +121,21 @@ public class GameManager : Singleton<GameManager>
         if (currentCircles == neededCircles)
         {
             StopGame();
-            winPanel.SetActive(true);
+            if(SceneManager.GetActiveScene().name == "Level10")
+            {
+                SceneManager.LoadScene("Menu");
+            }
             winPanel.transform.DOLocalMoveX(0, 0.5f);
         }
+    }
+    public void OnMenuButtonClick()
+    {
+        SceneManager.LoadScene("Menu");
+    }
+    public void OnContinueButtonClick()
+    {
+        isPaused = false;
+        pausePanel.transform.DOLocalMoveY(900, 0.25f).OnComplete(() => Time.timeScale = 1);
     }
     private void StopGame()
     {

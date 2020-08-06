@@ -1036,8 +1036,19 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 789838244}
+    - target: {fileID: 2871519417621882408, guid: 73a3765be7a9f0945bbd44514dbf308d,
+        type: 3}
+      propertyPath: m_Name
+      value: PausePanel
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 73a3765be7a9f0945bbd44514dbf308d, type: 3}
+--- !u!1 &557390361538370004 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2871519417621882408, guid: 73a3765be7a9f0945bbd44514dbf308d,
+    type: 3}
+  m_PrefabInstance: {fileID: 557390361538370003}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &832694624814468750
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1343,6 +1354,11 @@ PrefabInstance:
       propertyPath: offsetCircles.y
       value: -5
       objectReference: {fileID: 0}
+    - target: {fileID: 4805772424191952953, guid: 81f4ce602d7cae545ac6107cbb76ec94,
+        type: 3}
+      propertyPath: pausePanel
+      value: 
+      objectReference: {fileID: 557390361538370004}
     - target: {fileID: 4805772424191952954, guid: 81f4ce602d7cae545ac6107cbb76ec94,
         type: 3}
       propertyPath: m_LocalPosition.x
