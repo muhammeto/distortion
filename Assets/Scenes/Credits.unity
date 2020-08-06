@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -503,7 +503,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: -200.41756, w: -178.04688}
   m_textInfo:
     textComponent: {fileID: 348776006}
-    characterCount: 36
+    characterCount: 35
     spriteCount: 0
     spaceCount: 4
     wordCount: 4
@@ -962,7 +962,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'SFX
 
-    freesound.co.uk
+    freesfx
 
     bfxr'
   m_isRightToLeft: 0
@@ -1034,10 +1034,10 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: -200.41756, w: -178.04688}
   m_textInfo:
     textComponent: {fileID: 872245953}
-    characterCount: 24
+    characterCount: 16
     spriteCount: 0
     spaceCount: 2
-    wordCount: 5
+    wordCount: 3
     linkCount: 0
     lineCount: 3
     pageCount: 1

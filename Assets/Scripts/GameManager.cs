@@ -130,12 +130,14 @@ public class GameManager : Singleton<GameManager>
     }
     public void OnMenuButtonClick()
     {
+        Time.timeScale = 1;
         SceneManager.LoadScene("Menu");
     }
     public void OnContinueButtonClick()
     {
         isPaused = false;
-        pausePanel.transform.DOLocalMoveY(900, 0.25f).OnComplete(() => Time.timeScale = 1);
+        Time.timeScale = 1;
+        pausePanel.transform.DOLocalMoveY(900, 0.25f);
     }
     private void StopGame()
     {

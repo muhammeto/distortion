@@ -32,6 +32,7 @@ public class MenuUI: MonoBehaviour
 
     public void OnPlayButtonClick()
     {
+        print("clicked");
         Camera.main.DOShakePosition(0.1f);
         menuPanel.DOLocalMoveX(-1500, 0.5f);
         levelPanel.DOLocalMoveX(0, 0.5f);

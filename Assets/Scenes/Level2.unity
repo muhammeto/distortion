@@ -515,6 +515,16 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 789838244}
+    - target: {fileID: 6173331773476848098, guid: 73a3765be7a9f0945bbd44514dbf308d,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1306520034}
+    - target: {fileID: 6173331773476848098, guid: 73a3765be7a9f0945bbd44514dbf308d,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnContinueButtonClick
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 73a3765be7a9f0945bbd44514dbf308d, type: 3}
 --- !u!1 &557390361538370004 stripped
