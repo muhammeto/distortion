@@ -3,7 +3,7 @@
 public class Spawner : MonoBehaviour
 {
     [SerializeField] private Vector2 minPos = Vector2.zero,maxPos = Vector2.zero;
-    [SerializeField] private GameObject trianglePrefab;
+    [SerializeField] private GameObject trianglePrefab = null;
     [SerializeField] private int startSpawnTime = 1;
     [SerializeField] private int spawnTime = 3;
 

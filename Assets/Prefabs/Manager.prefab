@@ -46,7 +46,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   postProcess: {fileID: 11400000, guid: c75e49a84fd0c7340bd0605e450b62ec, type: 2}
   rewindText: {fileID: 0}
+  losePanel: {fileID: 0}
+  winPanel: {fileID: 0}
   neededCircles: 1
+  line: {fileID: 0}
+  circle: {fileID: 4864215596860303401, guid: 20846bed244fc704d83283c13566d0ea, type: 3}
+  offsetCircles: {x: 0, y: 0}
 --- !u!82 &4805772424191952955
 AudioSource:
   m_ObjectHideFlags: 0

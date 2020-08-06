@@ -35,12 +35,14 @@ public class MenuUI: MonoBehaviour
         Camera.main.DOShakePosition(0.1f);
         startButton.DOLocalMoveX(-1500, 0.5f);
         modePanel.DOLocalMoveX(0, 0.5f);
+        SoundManager.Instance.Click();
     }
 
     public void OnLevelModeButtonClick()
     {
         distortion.xMultiplier.value = 1;
         distortion.yMultiplier.value = 1;
+        SoundManager.Instance.Click();
         StartCoroutine(DistortionDecrease(-1f, "Level1"));
 
     }
@@ -49,6 +51,7 @@ public class MenuUI: MonoBehaviour
     {
         distortion.xMultiplier.value = 1;
         distortion.yMultiplier.value = 1;
+        SoundManager.Instance.Click();
         StartCoroutine(DistortionDecrease(-1f,"Endless"));
     }
 }

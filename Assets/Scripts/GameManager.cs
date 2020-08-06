@@ -8,76 +8,82 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : Singleton<GameManager>
 {
-    private UnityEngine.Rendering.Universal.ChromaticAberration chromatic;
-    private UnityEngine.Rendering.Universal.LensDistortion distortion;
     [SerializeField] private VolumeProfile postProcess = null;
     [SerializeField] private GameObject rewindText = null;
-    [SerializeField] private GameObject losePanel,winPanel = null;
+    [SerializeField] private GameObject losePanel = null, winPanel = null;
     [SerializeField] private int neededCircles = 0;
+    [SerializeField] private LineRenderer line = null;
+    [SerializeField] private GameObject circle = null;
+    [SerializeField] private Vector2 offsetCircles = Vector2.zero;
+
+    private UnityEngine.Rendering.Universal.LensDistortion distortion;
+    private UnityEngine.Rendering.Universal.ChromaticAberration chromatic;
     private int currentCircles = 0;
-    private AudioSource rewindSource;
     private bool isForward = true;
     private List<CircleMove> circles;
     private Camera cam;
-    private bool died=false;
-    void Start()
+    private bool died= false;
+
+    private void Start()
     {
-        circles = FindObjectsOfType<CircleMove>().ToList();
-        rewindSource = GetComponent<AudioSource>();
+        circles = new List<CircleMove>();
+        for (int i = 0; i < neededCircles; i++)
+        {
+            Vector2 pos = line.GetPosition(0);
+            pos += offsetCircles*i;
+            CircleMove current = Instantiate(circle, pos, Quaternion.identity).GetComponent<CircleMove>();
+            current.SetLine(line);
+            circles.Add(current);
+        }
+
         postProcess.TryGet(out chromatic);
         postProcess.TryGet(out distortion);
         chromatic.intensity.value = 0;
         distortion.intensity.value = 0;
+        
         cam = Camera.main;
     }
-    void Update()
+    private void Update()
     {
         if (died) return;
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            for (int i = 0; i < circles.Count; i++)
-            {
-                circles[i].ChangeState(isForward?-1:1);
-            }
-            StopAllCoroutines();
-            SoundManager.Instance.ChangeState();
-            if (isForward)
-            {
-                rewindText.SetActive(true);
-                isForward = false;
-                rewindSource.Play();
-                StartCoroutine(ChromaticIncrease(1f));
-                StartCoroutine(DistortionDecrease(-0.6f));
-            }
-            else
-            {
-                rewindText.SetActive(false);
-                isForward = true;
-                rewindSource.Stop();
-
-                StartCoroutine(ChromaticDecrease(0));
-                StartCoroutine(DistortionIncrease(0));
-
-            }
+            ChangeState();
         }
     }
-    public void IncreaseCount(CircleMove cmove)
+    private void ChangeState()
     {
-        currentCircles++;
-        circles.Remove(cmove);
-        Destroy(cmove.gameObject);
-        if(currentCircles == neededCircles)
+        for (int i = 0; i < circles.Count; i++)
         {
-            winPanel.SetActive(true);
-            winPanel.transform.DOLocalMoveX(0, 0.5f);
+            circles[i].ChangeState(isForward ? -1 : 1);
+        }
+        StopAllCoroutines();
+        SoundManager.Instance.ChangeState();
+        if (isForward)
+        {
+            rewindText.SetActive(true);
+            isForward = false;
+            StartCoroutine(ChromaticIncrease(1f));
+            StartCoroutine(DistortionDecrease(-0.6f));
+        }
+        else
+        {
+            rewindText.SetActive(false);
+            isForward = true;
+            StartCoroutine(ChromaticDecrease(0));
+            StartCoroutine(DistortionIncrease(0));
+
         }
     }
-    public void Retry()
+    private void Retry()
     {
+        SoundManager.Instance.Click();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
-    public void NextLevel()
+    private void NextLevel()
     {
+        SoundManager.Instance.Click();
+        // Change this
         if (SceneManager.GetActiveScene().buildIndex < 8)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
@@ -89,14 +95,25 @@ public class GameManager : Singleton<GameManager>
         died = true;
         zoomPos = new Vector3(zoomPos.x, zoomPos.y, -10);
         cam.DOOrthoSize(2, 0.5f);
-        cam.DOShakePosition(0.5f,8);
         cam.transform.DOMove(zoomPos, 0.5f).OnComplete(()=>
         {
             losePanel.SetActive(true);
             losePanel.transform.DOLocalMoveX(0, 0.25f);
         });
     }
-    public void StopGame()
+    public void IncreaseCount(CircleMove cmove)
+    {
+        currentCircles++;
+        circles.Remove(cmove);
+        Destroy(cmove.gameObject);
+        if (currentCircles == neededCircles)
+        {
+            StopGame();
+            winPanel.SetActive(true);
+            winPanel.transform.DOLocalMoveX(0, 0.5f);
+        }
+    }
+    private void StopGame()
     {
         for (int i = 0; i < circles.Count; i++)
         {
@@ -108,7 +125,7 @@ public class GameManager : Singleton<GameManager>
             triangles[i].Stop();
         }
     }
-    IEnumerator ChromaticIncrease(float value)
+    private IEnumerator ChromaticIncrease(float value)
     {
         while (value - chromatic.intensity.value > 0.01)
         {
@@ -116,7 +133,7 @@ public class GameManager : Singleton<GameManager>
             yield return null;
         }
     }
-    IEnumerator ChromaticDecrease(float value)
+    private IEnumerator ChromaticDecrease(float value)
     {
         while (chromatic.intensity.value - value > 0.01)
         {
@@ -124,7 +141,7 @@ public class GameManager : Singleton<GameManager>
             yield return null;
         }
     }
-    IEnumerator DistortionIncrease(float value)
+    private IEnumerator DistortionIncrease(float value)
     {
         while (value - distortion.intensity.value > 0.01)
         {
@@ -132,7 +149,7 @@ public class GameManager : Singleton<GameManager>
             yield return null;
         }
     }
-    IEnumerator DistortionDecrease(float value)
+    private IEnumerator DistortionDecrease(float value)
     {
         while (distortion.intensity.value - value > 0.01)
         {

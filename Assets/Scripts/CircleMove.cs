@@ -9,15 +9,16 @@ public class CircleMove : MonoBehaviour
     private LineRenderer line = null;
     private int maxWayPoint,currentWaypoint;
     private Vector3[] positions;
-    private bool isForward = true;
     
-    private void Start()
+
+    public void SetLine(LineRenderer line)
     {
-        line = FindObjectOfType<LineRenderer>();
+        this.line = line;
         maxWayPoint = line.positionCount;
         positions = new Vector3[maxWayPoint];
         line.GetPositions(positions);
         StartCoroutine(MoveForward(0));
+
     }
     public void ChangeState(int direction)
     {
@@ -30,17 +31,6 @@ public class CircleMove : MonoBehaviour
         {
             StartCoroutine(MoveBackward(currentWaypoint - 1));
         }
-        /*
-        if (isForward)
-        {
-            isForward = false;
-            StartCoroutine(MoveBackward(currentWaypoint - 1));
-        }
-        else
-        {
-            isForward = true;
-            StartCoroutine(MoveForward(currentWaypoint + 1));
-        }*/
     }
     IEnumerator MoveForward(int startIndex)
     {
@@ -73,8 +63,8 @@ public class CircleMove : MonoBehaviour
     {
         if (collision.CompareTag("Finish"))
         {
-            GameManager.Instance.IncreaseCount(this);
             Instantiate(effect, transform.position, Quaternion.identity);
+            GameManager.Instance.IncreaseCount(this);
         }
     }
 }

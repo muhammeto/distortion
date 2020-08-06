@@ -5,8 +5,9 @@ using UnityEngine;
 
 public class SoundManager : Singleton<SoundManager>
 {
-    [SerializeField] private AudioSource background;
-    [SerializeField] private AudioSource select;
+    [SerializeField] private AudioSource background = null;
+    [SerializeField] private AudioSource rewind = null;
+    [SerializeField] private AudioClip clickSound = null;
     private bool isForward = true;
 
     private void Awake()
@@ -14,6 +15,11 @@ public class SoundManager : Singleton<SoundManager>
         DontDestroyOnLoad(gameObject);
     }
 
+    public void Click()
+    {
+        rewind.Stop();
+        rewind.PlayOneShot(clickSound);
+    }
 
     public void ChangeState()
     {
@@ -22,10 +28,12 @@ public class SoundManager : Singleton<SoundManager>
         background.pitch = 0;
         if (!isForward)
         {
+            rewind.Play();
             StartCoroutine(PlayBackward());
         }
         else
         {
+            rewind.Stop();
             StartCoroutine(PlayForward());
         }
     }
