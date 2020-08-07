@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using DG.Tweening.Core;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,7 +60,7 @@ public class GameManager : Singleton<GameManager>
                 pausePanel.transform.DOLocalMoveY(900, 0.25f).OnComplete(() => Time.timeScale = 1);
             }
         }
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) || (Input.touchCount>0 && Input.GetTouch(0).phase == TouchPhase.Began))
         {
             ChangeState();
         }
@@ -70,22 +71,21 @@ public class GameManager : Singleton<GameManager>
         {
             circles[i].ChangeState(isForward ? -1 : 1);
         }
-        StopAllCoroutines();
+        DOTween.KillAll();
         SoundManager.Instance.ChangeState();
         if (isForward)
         {
             rewindText.SetActive(true);
             isForward = false;
-            StartCoroutine(ChromaticIncrease(1f));
-            StartCoroutine(DistortionDecrease(-0.6f));
+            ChromaticChange(1f,0.75f);
+            DistortinChange(-0.5f, 0.75f);
         }
         else
         {
             rewindText.SetActive(false);
             isForward = true;
-            StartCoroutine(ChromaticDecrease(0));
-            StartCoroutine(DistortionIncrease(0));
-
+            ChromaticChange(0f, 0.75f);
+            DistortinChange(0f, 0.75f);
         }
     }
     private void Retry()
@@ -151,36 +151,13 @@ public class GameManager : Singleton<GameManager>
             triangles[i].Stop();
         }
     }
-    private IEnumerator ChromaticIncrease(float value)
+    private void ChromaticChange(float value,float duration)
     {
-        while (value - chromatic.intensity.value > 0.01)
-        {
-            chromatic.intensity.value += 0.005f;
-            yield return null;
-        }
+        DOTween.To(() => chromatic.intensity.value, x => chromatic.intensity.value = x, value, duration);
     }
-    private IEnumerator ChromaticDecrease(float value)
+    private void DistortinChange(float value, float duration)
     {
-        while (chromatic.intensity.value - value > 0.01)
-        {
-            chromatic.intensity.value -= 0.005f;
-            yield return null;
-        }
+        DOTween.To(() => distortion.intensity.value, x => distortion.intensity.value = x, value, duration);
     }
-    private IEnumerator DistortionIncrease(float value)
-    {
-        while (value - distortion.intensity.value > 0.01)
-        {
-            distortion.intensity.value += 0.005f;
-            yield return null;
-        }
-    }
-    private IEnumerator DistortionDecrease(float value)
-    {
-        while (distortion.intensity.value - value > 0.01)
-        {
-            distortion.intensity.value -= 0.005f;
-            yield return null;
-        }
-    }
+    
 }

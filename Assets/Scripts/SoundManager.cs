@@ -19,6 +19,8 @@ public class SoundManager : MonoBehaviour
             _instance = this;
         }
         DontDestroyOnLoad(_instance.gameObject);
+        Application.targetFrameRate = 60;
+        QualitySettings.vSyncCount = 0;
     }
 
     [SerializeField] private AudioSource background = null;
@@ -32,25 +34,24 @@ public class SoundManager : MonoBehaviour
         {
             rewind.Stop();
             isForward = true;
-            StartCoroutine(PlayForward());
+            PlayForward();
         }
         rewind.PlayOneShot(clickSound);
     }
 
     public void ChangeState()
     {
-        StopAllCoroutines();
         isForward = !isForward;
         background.pitch = 0;
         if (!isForward)
         {
             rewind.Play();
-            StartCoroutine(PlayBackward());
+            PlayBackward();
         }
         else
         {
             rewind.Stop();
-            StartCoroutine(PlayForward());
+            PlayForward();
         }
     }
 
@@ -59,20 +60,12 @@ public class SoundManager : MonoBehaviour
         background.pitch = 1;
     }
 
-    private IEnumerator PlayBackward()
+    private void PlayBackward()
     {
-        while (background.pitch>-1)
-        {
-            background.pitch -= 0.01f;
-            yield return null;
-        }
+        background.DOPitch(-1f, 0.75f);
     }
-    private IEnumerator PlayForward()
+    private void PlayForward()
     {
-        while (background.pitch < 1)
-        {
-            background.pitch += 0.01f;
-            yield return null;
-        }
+        background.DOPitch(1f, 0.75f);
     }
 }

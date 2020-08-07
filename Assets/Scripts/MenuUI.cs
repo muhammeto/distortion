@@ -1,6 +1,4 @@
 ﻿using DG.Tweening;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
@@ -19,15 +17,10 @@ public class MenuUI: MonoBehaviour
         distortion.scale.value = 1;
     }
 
-    IEnumerator DistortionDecrease(float value,string levelName)
+    void DistortionDecrease(float value,float duration,string levelName)
     {
-        while (distortion.intensity.value - value > 0.01)
-        {
-            distortion.intensity.value -= 0.0025f;
-            distortion.scale.value -= 0.005f;
-            yield return null;
-        }
-        SceneManager.LoadScene(levelName);
+        DOTween.To(() => distortion.scale.value, x => distortion.scale.value = x, value, duration*2);
+        DOTween.To(() => distortion.intensity.value, x => distortion.intensity.value = x, value, duration).OnComplete(()=> SceneManager.LoadScene(levelName));
     }
 
     public void OnPlayButtonClick()
@@ -44,7 +37,7 @@ public class MenuUI: MonoBehaviour
         distortion.xMultiplier.value = 1;
         distortion.yMultiplier.value = 1;
         SoundManager.Instance.Click();
-        StartCoroutine(DistortionDecrease(-1f,levelName));
+        DistortionDecrease(-1f,0.75f,levelName);
 
     }
   
