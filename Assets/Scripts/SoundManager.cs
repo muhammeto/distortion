@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
-
+    #region Singleton
     private static SoundManager _instance;
     public static SoundManager Instance { get { return _instance; } }
     private void Awake()
@@ -22,50 +22,60 @@ public class SoundManager : MonoBehaviour
         Application.targetFrameRate = 60;
         QualitySettings.vSyncCount = 0;
     }
+    #endregion
 
     [SerializeField] private AudioSource background = null;
-    [SerializeField] private AudioSource rewind = null;
-    [SerializeField] private AudioClip clickSound = null;
-    private bool isForward = true;
+    [SerializeField] private AudioSource effects = null;
+    [SerializeField] private AudioClip[] clickSounds = null,selectSounds=null,slideSounds=null,rewindSounds=null;
 
+    private void Start()
+    {
+        background.volume = PlayerPrefs.GetFloat("BackgroundVolume", 0.5f);
+        effects.volume = PlayerPrefs.GetFloat("EffectVolume", 0.5f);
+    }
+    public void SetBackgroundVolume(float value)
+    {
+        background.volume = value;
+        PlayerPrefs.SetFloat("BackgroundVolume", background.volume);
+    }
+    public void SetEffectsVolume(float value)
+    {
+        effects.volume = value;
+        PlayerPrefs.SetFloat("EffectVolume", effects.volume);
+    }
     public void Click()
     {
-        if (!isForward)
-        {
-            rewind.Stop();
-            isForward = true;
-            PlayForward();
-        }
-        rewind.PlayOneShot(clickSound);
+        effects.PlayOneShot(clickSounds[Random.Range(0,clickSounds.Length)]);
+    }
+    public void Select()
+    {
+        effects.PlayOneShot(selectSounds[Random.Range(0,selectSounds.Length)]);
     }
 
-    public void ChangeState()
+    public void Slide()
     {
-        isForward = !isForward;
+        effects.PlayOneShot(slideSounds[Random.Range(0, slideSounds.Length)]);
+    }
+    public void ChangeState(GameState state)
+    {
+        transform.DOKill();
         background.pitch = 0;
-        if (!isForward)
+        // on pause?
+        switch (state)
         {
-            rewind.Play();
-            PlayBackward();
+            case GameState.Forward:
+                effects.Stop();
+                PitchChange(1f, 0.75f);
+                break;
+            case GameState.Backward:
+                effects.PlayOneShot(rewindSounds[Random.Range(0, rewindSounds.Length)]);
+                PitchChange(-1f,0.75f);
+                break;
         }
-        else
-        {
-            rewind.Stop();
-            PlayForward();
-        }
     }
-
-    public void SetPitch()
+    private void PitchChange(float value, float duration)
     {
-        background.pitch = 1;
+        background.DOPitch(value, duration).OnKill(() => background.pitch = value);
     }
-
-    private void PlayBackward()
-    {
-        background.DOPitch(-1f, 0.75f);
-    }
-    private void PlayForward()
-    {
-        background.DOPitch(1f, 0.75f);
-    }
+    
 }

@@ -1,163 +1,120 @@
 ﻿using DG.Tweening;
-using DG.Tweening.Core;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 
+public enum GameState
+{
+    Forward,
+    Backward,
+    Pause
+}
 public class GameManager : Singleton<GameManager>
 {
-    [SerializeField] private VolumeProfile postProcess = null;
-    [SerializeField] private GameObject rewindText = null;
-    [SerializeField] private GameObject losePanel = null, winPanel = null,pausePanel = null;
     [SerializeField] private int neededCircles = 0;
     [SerializeField] private LineRenderer line = null;
     [SerializeField] private GameObject circle = null;
     [SerializeField] private Vector2 offsetCircles = Vector2.zero;
+    [SerializeField] private GameObject effect = null;
 
-    private UnityEngine.Rendering.Universal.LensDistortion distortion;
-    private UnityEngine.Rendering.Universal.ChromaticAberration chromatic;
+    private GameState _state;
+    private GameState _prevState;
     private int currentCircles = 0;
-    private bool isForward = true;
+    private bool died = false;
+
     private List<CircleMove> circles;
+    private Vector3[] _positions;
+
+    private PostprocessManager postprocessManager;
+    private GameUIManager UIManager;
     private Camera cam;
-    private bool died= false;
-    private bool isPaused=false;
 
     private void Start()
     {
+        postprocessManager = GetComponent<PostprocessManager>();
+        UIManager = GetComponent<GameUIManager>();
+        cam = Camera.main;
+
+        _state = GameState.Forward;
         circles = new List<CircleMove>();
+        _positions = new Vector3[line.positionCount];
+        line.GetPositions(_positions);
         for (int i = 0; i < neededCircles; i++)
         {
             Vector2 pos = line.GetPosition(0);
             pos += offsetCircles*i;
             CircleMove current = Instantiate(circle, pos, Quaternion.identity).GetComponent<CircleMove>();
-            current.SetLine(line);
+            current.SetLine(_positions);
             circles.Add(current);
         }
-
-        postProcess.TryGet(out chromatic);
-        postProcess.TryGet(out distortion);
-        chromatic.intensity.value = 0;
-        distortion.intensity.value = 0;
-        
-        cam = Camera.main;
     }
     private void Update()
     {
         if (died) return;
         if(Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.P))
         {
-            isPaused = !isPaused;
-            if (isPaused)
+            if (_state!=GameState.Pause)
             {
-                pausePanel.transform.DOLocalMoveY(0, 0.25f).OnComplete(()=>Time.timeScale = 0);
+                _prevState = _state;
+                _state = GameState.Pause;
+                UIManager.OnPause();
             }
             else
             {
-                pausePanel.transform.DOLocalMoveY(900, 0.25f).OnComplete(() => Time.timeScale = 1);
+                _state = _prevState;
+                UIManager.OnContinueButtonClick();
             }
         }
-        if (Input.GetKeyDown(KeyCode.Space) || (Input.touchCount>0 && Input.GetTouch(0).phase == TouchPhase.Began))
+        if(Input.GetKeyDown(KeyCode.Space) || (Input.touchCount>0 && Input.GetTouch(0).phase == TouchPhase.Began))
         {
-            ChangeState();
+            ChangeState(_state == 0 ? GameState.Backward : GameState.Forward);
         }
     }
-    private void ChangeState()
+    private void ChangeState(GameState state)
     {
+        _state = state;
         for (int i = 0; i < circles.Count; i++)
         {
-            circles[i].ChangeState(isForward ? -1 : 1);
+            circles[i].ChangeState(_state);
         }
-        DOTween.KillAll();
-        SoundManager.Instance.ChangeState();
-        if (isForward)
-        {
-            rewindText.SetActive(true);
-            isForward = false;
-            ChromaticChange(1f,0.75f);
-            DistortinChange(-0.5f, 0.75f);
-        }
-        else
-        {
-            rewindText.SetActive(false);
-            isForward = true;
-            ChromaticChange(0f, 0.75f);
-            DistortinChange(0f, 0.75f);
-        }
+        postprocessManager.ChangeState(_state);
+        SoundManager.Instance.ChangeState(_state);
+        UIManager.ChangeState(_state == GameState.Backward);
     }
-    private void Retry()
-    {
-        SoundManager.Instance.Click();
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
-    private void NextLevel()
-    {
-        SoundManager.Instance.Click();
-        // Change this
-        if (SceneManager.GetActiveScene().buildIndex < 8)
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
-        }
-    }
+    
     public void LosePanel(Vector3 zoomPos)
     {
-        StopGame();
         died = true;
-        zoomPos = new Vector3(zoomPos.x, zoomPos.y, -10);
-        cam.DOOrthoSize(2, 0.5f);
-        cam.transform.DOMove(zoomPos, 0.5f).OnComplete(()=>
-        {
-            losePanel.transform.DOLocalMoveX(0, 0.25f);
-        });
+        CameraManager.Instance.Zoom(zoomPos);
+        UIManager.OnLose();
     }
     public void IncreaseCount(CircleMove cmove)
     {
         currentCircles++;
+        Instantiate(effect, cmove.transform.position, Quaternion.identity);
         circles.Remove(cmove);
         Destroy(cmove.gameObject);
         if (currentCircles == neededCircles)
         {
-            StopGame();
-            if(SceneManager.GetActiveScene().name == "Level10")
+            if (SceneManager.GetActiveScene().buildIndex == SceneManager.sceneCount-1)
             {
                 SceneManager.LoadScene("Menu");
             }
-            winPanel.transform.DOLocalMoveX(0, 0.5f);
+            print("win");
+            UIManager.OnWin();
         }
-    }
-    public void OnMenuButtonClick()
-    {
-        Time.timeScale = 1;
-        SceneManager.LoadScene("Menu");
-    }
-    public void OnContinueButtonClick()
-    {
-        isPaused = false;
-        Time.timeScale = 1;
-        pausePanel.transform.DOLocalMoveY(900, 0.25f);
     }
     private void StopGame()
     {
         for (int i = 0; i < circles.Count; i++)
         {
-            circles[i].ChangeState(0);
+            circles[i].ChangeState(GameState.Pause);
         }
         TriangleMove[] triangles = FindObjectsOfType<TriangleMove>();
         for (int i = 0; i < triangles.Length; i++)
         {
-            triangles[i].Stop();
+            triangles[i].SetSpeed();
         }
-    }
-    private void ChromaticChange(float value,float duration)
-    {
-        DOTween.To(() => chromatic.intensity.value, x => chromatic.intensity.value = x, value, duration);
-    }
-    private void DistortinChange(float value, float duration)
-    {
-        DOTween.To(() => distortion.intensity.value, x => distortion.intensity.value = x, value, duration);
     }
     
 }

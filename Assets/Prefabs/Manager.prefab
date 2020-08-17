@@ -52,3 +52,4 @@ MonoBehaviour:
   line: {fileID: 0}
   circle: {fileID: 4864215596860303401, guid: 20846bed244fc704d83283c13566d0ea, type: 3}
   offsetCircles: {x: 0, y: 0}
+  effect: {fileID: 1313924657840720334, guid: 9601205c9bd3f6641843ae23d13e7bcb, type: 3}
