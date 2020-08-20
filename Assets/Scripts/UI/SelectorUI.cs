@@ -22,6 +22,11 @@ public class SelectorUI : MonoBehaviour
     [SerializeField] private SelectorType type = SelectorType.ButtonSelector;
     [SerializeField] private SelectorDirection direction = SelectorDirection.Vertical;
     [SerializeField] private int offset = 0;
+    [SerializeField] private KeyCode seltexitInvokeKey = KeyCode.Escape;
+    [SerializeField] private KeyCode buttonInvokeKey1 = KeyCode.Return;
+    [SerializeField] private KeyCode buttonInvokeKey2 = KeyCode.Space;
+
+
 
     private int currentSelected = 0;
     private RectTransform selector;
@@ -58,11 +63,11 @@ public class SelectorUI : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(seltexitInvokeKey))
         {
             selfExitButton.onClick.Invoke();
         }
-        if (type == SelectorType.ButtonSelector && (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space)))
+        if (type == SelectorType.ButtonSelector && (Input.GetKeyDown(buttonInvokeKey1) || Input.GetKeyDown(buttonInvokeKey2)))
         {
             selectable[currentSelected].GetComponent<Button>().onClick.Invoke();
         }else if (type == SelectorType.SliderSelector && (Input.GetAxisRaw("Horizontal") != 0))

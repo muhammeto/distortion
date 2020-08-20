@@ -59,11 +59,6 @@ public class GameManager : Singleton<GameManager>
                 _state = GameState.Pause;
                 UIManager.OnPause();
             }
-            else
-            {
-                _state = _prevState;
-                UIManager.OnContinueButtonClick();
-            }
         }
         if(Input.GetKeyDown(KeyCode.Space) || (Input.touchCount>0 && Input.GetTouch(0).phase == TouchPhase.Began))
         {
