@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using Chronos.Example;
+using System.Collections;
 using System.IO;
 using UnityEngine;
 
-public class CircleMove : MonoBehaviour
+public class CircleMove : ExampleBaseBehaviour
 {
     [SerializeField] private float forwardSpeed = 5f, backwardSpeed = 3f;
     private int _maxWayPoint,_currentWaypoint;
@@ -35,7 +36,7 @@ public class CircleMove : MonoBehaviour
             _currentWaypoint = i;
             while (Vector3.Distance(transform.position, _positions[_currentWaypoint]) > .0001f)
             {
-                transform.position = Vector3.MoveTowards(transform.position, _positions[_currentWaypoint], forwardSpeed * Time.deltaTime);
+                transform.position = Vector3.MoveTowards(transform.position, _positions[_currentWaypoint], forwardSpeed * time.deltaTime);
                 yield return null;
             }
             transform.position = _positions[_currentWaypoint];
@@ -48,7 +49,7 @@ public class CircleMove : MonoBehaviour
             _currentWaypoint = i;
             while (Vector3.Distance(transform.position, _positions[_currentWaypoint]) > .0001f)
             {
-                transform.position = Vector3.MoveTowards(transform.position, _positions[_currentWaypoint], backwardSpeed * Time.deltaTime);
+                transform.position = Vector3.MoveTowards(transform.position, _positions[_currentWaypoint], backwardSpeed * time.deltaTime);
                 yield return null;
             }
             transform.position = _positions[_currentWaypoint];

@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Chronos.Example;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Spawner : MonoBehaviour
+public class Spawner : ExampleBaseBehaviour
 {
     [SerializeField] private GameObject trianglePrefab = null;
     [SerializeField] private float startSpawnTime = 1;
@@ -12,29 +13,26 @@ public class Spawner : MonoBehaviour
 
     private bool _isStarted;
     private float _startTimeCounter,_spawnTimeCounter;
-    private GameState _state;
 
     private void Start()
     {
-        _state = GameState.Forward;
         _isStarted = false;
         _startTimeCounter = startSpawnTime;
         _spawnTimeCounter = 0;
     }
     private void Update()
     {
-        if (_state == GameState.Pause) return;
         if (!_isStarted)
         {
-            _startTimeCounter -= Time.deltaTime;
+            _startTimeCounter -= time.deltaTime;
             if (_startTimeCounter <= 0f)
             {
                 _isStarted = true;
             }
         }
-        if (_isStarted)
+        else
         {
-            _spawnTimeCounter -= Time.deltaTime;
+            _spawnTimeCounter -= time.deltaTime;
             if (_spawnTimeCounter <= 0f)
             {
                 Spawn();
@@ -54,10 +52,6 @@ public class Spawner : MonoBehaviour
             Instantiate(trianglePrefab, pos, trianglePrefab.transform.rotation);
         }
 
-    }
-    public void ChangeState(GameState state)
-    {
-        _state = state;
     }
     public void Add(Vector2 pos)
     {

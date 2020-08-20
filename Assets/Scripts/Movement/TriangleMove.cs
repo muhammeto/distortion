@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using Chronos.Example;
+using UnityEngine;
 
-public class TriangleMove : MonoBehaviour
+public class TriangleMove : ExampleBaseBehaviour
 {
     private Rigidbody2D _rb;
     private bool isVisible;
@@ -10,7 +11,7 @@ public class TriangleMove : MonoBehaviour
     [SerializeField] private LayerMask camBounds;
     private void Start()
     {
-        _rb = GetComponent<Rigidbody2D>();
+        _rb = time.GetComponent<Rigidbody2D>();
         _rb.velocity = direction*speed;
     }
 
@@ -19,7 +20,7 @@ public class TriangleMove : MonoBehaviour
         if (!isVisible)
         {
             if (!indicator.activeSelf) indicator.SetActive(true);
-            Vector2 direction = -transform.position;
+            Vector2 direction = -transform.position.normalized;
             RaycastHit2D ray = Physics2D.Raycast(transform.position, direction,10, camBounds);
             if (ray.collider != null)
             {

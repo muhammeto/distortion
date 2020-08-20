@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4864215596860303405}
   - component: {fileID: 4864215596860303406}
   - component: {fileID: 4864215596860303404}
+  - component: {fileID: 2536147236961020815}
   m_Layer: 0
   m_Name: Circle
   m_TagString: Player
@@ -135,4 +136,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   forwardSpeed: 5
   backwardSpeed: 3
-  effect: {fileID: 1313924657840720334, guid: 9601205c9bd3f6641843ae23d13e7bcb, type: 3}
+--- !u!114 &2536147236961020815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4864215596860303401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6090da511f8374135a15dd8655adcd44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _recordingInterval: 0.25
+  _mode: 1
+  _globalClockKey: Entities
+  _rewindable: 0
+  _recordingDuration: 60

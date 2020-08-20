@@ -1,4 +1,5 @@
-﻿using DG.Tweening;
+﻿using Chronos;
+using DG.Tweening;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,19 +10,18 @@ public enum GameState
     Backward,
     Pause
 }
-public class GameManager : Singleton<GameManager>
+public class GameManager : UnitySingleton<GameManager>
 {
     [SerializeField] private int neededCircles = 0;
     [SerializeField] private LineRenderer line = null;
     [SerializeField] private GameObject circle = null;
     [SerializeField] private Vector2 offsetCircles = Vector2.zero;
     [SerializeField] private GameObject effect = null;
+    
 
     private GameState _state;
-    private GameState _prevState;
     private int currentCircles = 0;
-    private bool died = false;
-
+    private bool died = false, paused = false, finished = false;
     private List<CircleMove> circles;
     private Vector3[] _positions;
 
@@ -34,7 +34,6 @@ public class GameManager : Singleton<GameManager>
         postprocessManager = GetComponent<PostprocessManager>();
         UIManager = GetComponent<GameUIManager>();
         cam = Camera.main;
-
         _state = GameState.Forward;
         circles = new List<CircleMove>();
         _positions = new Vector3[line.positionCount];
@@ -50,15 +49,19 @@ public class GameManager : Singleton<GameManager>
     }
     private void Update()
     {
-        if (died) return;
+        if (died || finished) return;
         if(Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.P))
         {
-            if (_state!=GameState.Pause)
+            if (!paused)
             {
-                _prevState = _state;
-                _state = GameState.Pause;
                 UIManager.OnPause();
             }
+            else
+            {
+                UIManager.OnContinueButtonClick();
+            }
+            paused = !paused;
+            return;
         }
         if(Input.GetKeyDown(KeyCode.Space) || (Input.touchCount>0 && Input.GetTouch(0).phase == TouchPhase.Began))
         {
@@ -91,11 +94,11 @@ public class GameManager : Singleton<GameManager>
         Destroy(cmove.gameObject);
         if (currentCircles == neededCircles)
         {
+            finished = true;
             if (SceneManager.GetActiveScene().buildIndex == SceneManager.sceneCount-1)
             {
                 SceneManager.LoadScene("Menu");
             }
-            print("win");
             UIManager.OnWin();
         }
     }

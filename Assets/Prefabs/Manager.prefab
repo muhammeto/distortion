@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4805772424191952954}
   - component: {fileID: 4805772424191952953}
+  - component: {fileID: 4805772423172170203}
+  - component: {fileID: 4805772423172170204}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -43,13 +45,42 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c52b29eab479be4f9b8b42ab3e8f311, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  postProcess: {fileID: 11400000, guid: c75e49a84fd0c7340bd0605e450b62ec, type: 2}
+  neededCircles: 2
+  line: {fileID: 0}
+  circle: {fileID: 4864215596860303401, guid: 20846bed244fc704d83283c13566d0ea, type: 3}
+  offsetCircles: {x: 0, y: -5}
+  effect: {fileID: 1313924657840720334, guid: 9601205c9bd3f6641843ae23d13e7bcb, type: 3}
+--- !u!114 &4805772423172170203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4805772424191952952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e908be4db71b83c4cb6d374f1f783de8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   rewindText: {fileID: 0}
+  pauseText: {fileID: 0}
   losePanel: {fileID: 0}
   winPanel: {fileID: 0}
   pausePanel: {fileID: 0}
-  neededCircles: 1
-  line: {fileID: 0}
-  circle: {fileID: 4864215596860303401, guid: 20846bed244fc704d83283c13566d0ea, type: 3}
-  offsetCircles: {x: 0, y: 0}
-  effect: {fileID: 1313924657840720334, guid: 9601205c9bd3f6641843ae23d13e7bcb, type: 3}
+  scanLines: {fileID: 0}
+  retrySelector: {fileID: 0}
+  nextSelector: {fileID: 0}
+  pauseSelector: {fileID: 0}
+--- !u!114 &4805772423172170204
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4805772424191952952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99d12b198af478c40aec5cda60400ed9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  postProcess: {fileID: 11400000, guid: c75e49a84fd0c7340bd0605e450b62ec, type: 2}

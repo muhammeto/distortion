@@ -94,6 +94,7 @@ GameObject:
   - component: {fileID: 1913003657678170572}
   - component: {fileID: 1913003657678170573}
   - component: {fileID: -3893562121299296775}
+  - component: {fileID: -4268801265884979462}
   m_Layer: 0
   m_Name: Triangle
   m_TagString: Enemy
@@ -233,6 +234,23 @@ MonoBehaviour:
   camBounds:
     serializedVersion: 2
     m_Bits: 2048
+--- !u!114 &-4268801265884979462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1913003657678170560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6090da511f8374135a15dd8655adcd44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _recordingInterval: 0.5
+  _mode: 1
+  _globalClockKey: Entities
+  _rewindable: 0
+  _recordingDuration: 30
 --- !u!1 &8484887127268387108
 GameObject:
   m_ObjectHideFlags: 0

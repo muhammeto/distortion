@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class CameraManager : Singleton<CameraManager>
+public class CameraManager : UnitySingleton<CameraManager>
 {
     private Camera _currentCamera;
     private void Awake()
