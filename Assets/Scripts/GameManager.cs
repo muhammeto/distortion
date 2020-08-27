@@ -99,6 +99,7 @@ public class GameManager : UnitySingleton<GameManager>
     }
     public void IncreaseCount(CircleMove cmove)
     {
+        SoundManager.Instance.Score();
         currentCircles++;
         Instantiate(effect, cmove.transform.position, Quaternion.identity);
         circles.Remove(cmove);

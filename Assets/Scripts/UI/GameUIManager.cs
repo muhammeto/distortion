@@ -34,6 +34,8 @@ public class GameUIManager : MonoBehaviour
 
     public void OnLose()
     {
+        SoundManager.Instance.Slide();
+        SoundManager.Instance.Lose();
         scanLines.SetActive(true);
         entities.localTimeScale = 0;
         losePanel.transform.DOLocalMoveX(-135, 0.25f);
@@ -42,22 +44,23 @@ public class GameUIManager : MonoBehaviour
 
     public void OnWin()
     {
+        SoundManager.Instance.Slide();
+        SoundManager.Instance.Win();
         scanLines.SetActive(true);
         entities.localTimeScale = 0;
         winPanel.transform.DOLocalMoveX(-135, 0.25f);
         ChangeSelected(winFirstSelect);
-
     }
 
     public void OnPause()
     {
+        SoundManager.Instance.Slide();
         pauseText.SetActive(true);
         scanLines.SetActive(true);
         GameManager.Instance.SetPaused(true);
         entities.localTimeScale = 0;
         pausePanel.transform.DOLocalMoveY(0, 0.25f);
         ChangeSelected(pauseFirstSelect);
-
     }
 
     public void OnMenuButtonClick()

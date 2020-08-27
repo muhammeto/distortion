@@ -38,6 +38,7 @@ public class MenuUI: MonoBehaviour
     public void OnPlayButtonClick()
     {
         SoundManager.Instance.Click();
+        SoundManager.Instance.Slide();
         menuPanel.DOLocalMoveX(-2000, 0.5f);
         levelPanel.DOLocalMoveX(-135, 0.5f);
         ChangeSelected(levelFirstSelected);
@@ -45,6 +46,8 @@ public class MenuUI: MonoBehaviour
     public void OnPlayBackButtonClick()
     {
         SoundManager.Instance.Click();
+        SoundManager.Instance.Slide();
+
         levelPanel.DOLocalMoveX(2000, 0.5f);
         menuPanel.DOLocalMoveX(-135, 0.5f);
         ChangeSelected(menuFirstSelected);
@@ -53,6 +56,8 @@ public class MenuUI: MonoBehaviour
     public void OnOptionsButtonClick()
     {
         SoundManager.Instance.Click();
+        SoundManager.Instance.Slide();
+
         menuPanel.DOLocalMoveX(-2000, 0.5f);
         optionsPanel.DOLocalMoveY(0, 0.5f);
         ChangeSelected(optionsFirstSelected);
@@ -61,6 +66,8 @@ public class MenuUI: MonoBehaviour
     public void OnOptionsBackButtonClick()
     {
         SoundManager.Instance.Click();
+        SoundManager.Instance.Slide();
+
         optionsPanel.DOLocalMoveY(2000, 0.5f);
         menuPanel.DOLocalMoveX(-135, 0.5f);
         ChangeSelected(menuFirstSelected);
@@ -68,6 +75,8 @@ public class MenuUI: MonoBehaviour
     public void OnQuitButtonClick()
     {
         SoundManager.Instance.Click();
+        SoundManager.Instance.Slide();
+
         menuPanel.DOLocalMoveX(-2000, 0.5f);
         quitPanel.DOLocalMoveY(0, 0.5f);
         ChangeSelected(quitFirstSeleted);
@@ -75,6 +84,8 @@ public class MenuUI: MonoBehaviour
     public void OnQuitBackButtonClick()
     {
         SoundManager.Instance.Click();
+        SoundManager.Instance.Slide();
+
         quitPanel.DOLocalMoveY(-2000, 0.5f);
         menuPanel.DOLocalMoveX(-135, 0.5f);
         ChangeSelected(menuFirstSelected);

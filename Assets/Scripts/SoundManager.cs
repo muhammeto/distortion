@@ -26,7 +26,8 @@ public class SoundManager : MonoBehaviour
 
     [SerializeField] private AudioSource background = null;
     [SerializeField] private AudioSource effects = null;
-    [SerializeField] private AudioClip[] clickSounds = null,selectSounds=null,slideSounds=null,rewindSounds=null;
+    [SerializeField] private AudioClip[] clickSounds = null,selectSounds=null,slideSounds=null,rewindSounds=null
+        , winSounds = null, loseSounds = null, scoreSounds = null;
 
     private void Start()
     {
@@ -50,6 +51,19 @@ public class SoundManager : MonoBehaviour
     public void Select()
     {
         effects.PlayOneShot(selectSounds[Random.Range(0,selectSounds.Length)]);
+    }
+
+    public void Win()
+    {
+        effects.PlayOneShot(winSounds[Random.Range(0, winSounds.Length)]);
+    }
+    public void Lose()
+    {
+        effects.PlayOneShot(loseSounds[Random.Range(0, loseSounds.Length)]);
+    }
+    public void Score()
+    {
+        effects.PlayOneShot(scoreSounds[Random.Range(0, scoreSounds.Length)]);
     }
     public void Slide()
     {
