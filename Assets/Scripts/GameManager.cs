@@ -24,17 +24,18 @@ public class GameManager : UnitySingleton<GameManager>
     private bool died = false, paused = false, finished = false;
     private List<CircleMove> circles;
     private Vector3[] _positions;
-
+    private bool holdToRewind;
     private PostprocessManager postprocessManager;
     private GameUIManager UIManager;
-    private Camera cam;
 
     private void Start()
     {
         postprocessManager = GetComponent<PostprocessManager>();
         UIManager = GetComponent<GameUIManager>();
-        cam = Camera.main;
         _state = GameState.Forward;
+        SoundManager.Instance.ChangeState(_state);
+        holdToRewind = PlayerPrefs.GetInt("InputType", 0) == 1;
+
         circles = new List<CircleMove>();
         _positions = new Vector3[line.positionCount];
         line.GetPositions(_positions);
@@ -60,13 +61,23 @@ public class GameManager : UnitySingleton<GameManager>
             {
                 UIManager.OnContinueButtonClick();
             }
-            paused = !paused;
-            return;
         }
-        if(Input.GetKeyDown(KeyCode.Space) || (Input.touchCount>0 && Input.GetTouch(0).phase == TouchPhase.Began))
+        if (paused) return;
+        if (Input.GetKeyDown(KeyCode.Space) || (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began))
         {
             ChangeState(_state == 0 ? GameState.Backward : GameState.Forward);
         }
+        if (holdToRewind)
+        {
+            if (Input.GetKeyUp(KeyCode.Space) || (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended))
+            {
+                ChangeState(_state == 0 ? GameState.Backward : GameState.Forward);
+            }
+        }
+    }
+    public void SetPaused(bool paused)
+    {
+        this.paused = paused;
     }
     private void ChangeState(GameState state)
     {
@@ -102,17 +113,4 @@ public class GameManager : UnitySingleton<GameManager>
             UIManager.OnWin();
         }
     }
-    private void StopGame()
-    {
-        for (int i = 0; i < circles.Count; i++)
-        {
-            circles[i].ChangeState(GameState.Pause);
-        }
-        TriangleMove[] triangles = FindObjectsOfType<TriangleMove>();
-        for (int i = 0; i < triangles.Length; i++)
-        {
-            triangles[i].SetSpeed();
-        }
-    }
-    
 }

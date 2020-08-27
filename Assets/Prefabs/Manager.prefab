@@ -68,9 +68,9 @@ MonoBehaviour:
   winPanel: {fileID: 0}
   pausePanel: {fileID: 0}
   scanLines: {fileID: 0}
-  retrySelector: {fileID: 0}
-  nextSelector: {fileID: 0}
-  pauseSelector: {fileID: 0}
+  winFirstSelect: {fileID: 0}
+  pauseFirstSelect: {fileID: 0}
+  loseFirstSelect: {fileID: 0}
 --- !u!114 &4805772423172170204
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -19,8 +19,8 @@ public class SoundManager : MonoBehaviour
             _instance = this;
         }
         DontDestroyOnLoad(_instance.gameObject);
-        Application.targetFrameRate = 60;
         QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = 60;
     }
     #endregion
 
@@ -51,7 +51,6 @@ public class SoundManager : MonoBehaviour
     {
         effects.PlayOneShot(selectSounds[Random.Range(0,selectSounds.Length)]);
     }
-
     public void Slide()
     {
         effects.PlayOneShot(slideSounds[Random.Range(0, slideSounds.Length)]);
@@ -60,7 +59,6 @@ public class SoundManager : MonoBehaviour
     {
         transform.DOKill();
         background.pitch = 0;
-        // on pause?
         switch (state)
         {
             case GameState.Forward:
@@ -77,5 +75,4 @@ public class SoundManager : MonoBehaviour
     {
         background.DOPitch(value, duration).OnKill(() => background.pitch = value);
     }
-    
 }

@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Rendering;
 using DG.Tweening;
-
-
-
 public class PostprocessManager : MonoBehaviour
 {
     [SerializeField] private VolumeProfile postProcess = null;

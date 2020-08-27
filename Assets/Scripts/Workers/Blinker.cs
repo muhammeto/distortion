@@ -6,12 +6,14 @@ using UnityEngine;
 public class Blinker : MonoBehaviour
 {
     private TextMeshPro _renderer;
-    private void OnEnable()
+    private void Awake()
     {
         _renderer = GetComponent<TextMeshPro>();
+    }
+    private void OnEnable()
+    {
         StartCoroutine(Blink());
     }
-
     IEnumerator Blink()
     {
         while (true)

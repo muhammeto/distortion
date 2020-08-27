@@ -1,6 +1,7 @@
 ﻿using Chronos;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 public class GameUIManager : MonoBehaviour
@@ -8,30 +9,24 @@ public class GameUIManager : MonoBehaviour
     [SerializeField] private GameObject rewindText = null,pauseText = null;
     [SerializeField] private GameObject losePanel = null, winPanel = null, pausePanel = null;
     [SerializeField] private GameObject scanLines = null;
-    [SerializeField] private SelectorUI retrySelector = null, nextSelector = null, pauseSelector = null;
-    private SelectorUI _currentSelector = null;
+    [SerializeField] private GameObject winFirstSelect = null, pauseFirstSelect = null, loseFirstSelect = null;
     private Clock entities;
 
 
     private void Start()
     {
-        ChangeSelector();
+        ChangeSelected();
         entities = Timekeeper.instance.Clock("Entities");
     }
 
-    private void ChangeSelector(SelectorUI changeTo = null)
-    {
-        retrySelector.gameObject.SetActive(false);
-        nextSelector.gameObject.SetActive(false);
-        pauseSelector.gameObject.SetActive(false);
 
-        if (changeTo != null)
-        {
-            SoundManager.Instance.Slide();
-            changeTo.gameObject.SetActive(true);
-            _currentSelector = changeTo;
-        }
+    public void ChangeSelected(GameObject selected = null)
+    {
+        EventSystem.current.SetSelectedGameObject(null);
+        EventSystem.current.SetSelectedGameObject(selected);
+        SoundManager.Instance.Slide();
     }
+
     public void ChangeState(bool rewind)
     {
         rewindText.SetActive(rewind);
@@ -41,30 +36,33 @@ public class GameUIManager : MonoBehaviour
     {
         scanLines.SetActive(true);
         entities.localTimeScale = 0;
-        ChangeSelector(retrySelector);
-        losePanel.transform.DOLocalMoveX(-135, 0.25f).OnComplete(() => Time.timeScale = 0);
+        losePanel.transform.DOLocalMoveX(-135, 0.25f);
+        ChangeSelected(loseFirstSelect);
     }
 
     public void OnWin()
     {
         scanLines.SetActive(true);
         entities.localTimeScale = 0;
-        ChangeSelector(nextSelector);
-        winPanel.transform.DOLocalMoveX(-135, 0.25f).OnComplete(()=>Time.timeScale = 0);
+        winPanel.transform.DOLocalMoveX(-135, 0.25f);
+        ChangeSelected(winFirstSelect);
+
     }
 
     public void OnPause()
     {
         pauseText.SetActive(true);
         scanLines.SetActive(true);
+        GameManager.Instance.SetPaused(true);
         entities.localTimeScale = 0;
-        ChangeSelector(pauseSelector);
         pausePanel.transform.DOLocalMoveY(0, 0.25f);
+        ChangeSelected(pauseFirstSelect);
+
     }
 
     public void OnMenuButtonClick()
     {
-        Time.timeScale = 1;
+        entities.localTimeScale = 1;
         SoundManager.Instance.Click();
         SceneManager.LoadScene("Menu");
     }
@@ -72,24 +70,27 @@ public class GameUIManager : MonoBehaviour
     {
         scanLines.SetActive(false);
         pauseText.SetActive(false);
-        ChangeSelector();
+        GameManager.Instance.SetPaused(false);
         entities.localTimeScale = 1;
         pausePanel.transform.DOLocalMoveY(2000, 0.25f);
+        ChangeSelected();
         SoundManager.Instance.Click();
     }
     public void OnRetryButtonClick()
     {
-        Time.timeScale = 1;
+        entities.localTimeScale = 1;
         SoundManager.Instance.Click();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
     public void OnNextLevelButtonClick()
     {
-        Time.timeScale = 1;
+        entities.localTimeScale = 1;
         SoundManager.Instance.Click();
-        if (SceneManager.GetActiveScene().buildIndex+1 < SceneManager.sceneCount)
+        if (SceneManager.GetActiveScene().buildIndex+1 < SceneManager.sceneCountInBuildSettings)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
     }
+
+    
 }

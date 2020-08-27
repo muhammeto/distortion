@@ -1,18 +1,20 @@
 ﻿using DG.Tweening;
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MenuUI: MonoBehaviour
 {
     [SerializeField] private RectTransform menuPanel=null, levelPanel=null, optionsPanel=null,quitPanel=null;
+    [SerializeField] private GameObject menuFirstSelected = null, levelFirstSelected = null, optionsFirstSelected = null, quitFirstSeleted = null;
     [SerializeField] private VolumeProfile postProcess = null;
-    [SerializeField] private SelectorUI menuSelector = null, quitSelector = null, levelSelector = null,optionsSelector=null;
-    [SerializeField] private Slider backgroundVolume, effectsVolume = null;
-    private SelectorUI _currentSelector = null;
-    private UnityEngine.Rendering.Universal.LensDistortion distortion;
+    [SerializeField] private Slider backgroundVolume = null, effectsVolume = null;
+    [SerializeField] private Toggle inputToggle = null;
+    private LensDistortion distortion;
 
     private void Start()
     {
@@ -21,71 +23,61 @@ public class MenuUI: MonoBehaviour
         distortion.xMultiplier.value = 0;
         distortion.yMultiplier.value = 0;
         distortion.scale.value = 1;
-
         backgroundVolume.value = PlayerPrefs.GetFloat("BackgroundVolume", 0.5f);
         effectsVolume.value = PlayerPrefs.GetFloat("EffectVolume", 0.5f);
+        inputToggle.isOn = PlayerPrefs.GetInt("InputType", 0) == 0 ? false : true;
+    }
 
-        ChangeSelector(menuSelector);
-    }
-    private void ChangeSelector(SelectorUI changeTo = null)
+    public void ChangeSelected(GameObject selected)
     {
-        menuSelector.gameObject.SetActive(false);
-        quitSelector.gameObject.SetActive(false);
-        levelSelector.gameObject.SetActive(false);
-        optionsSelector.gameObject.SetActive(false);
-        
-        if (changeTo != null)
-        {
-            SoundManager.Instance.Slide();
-            changeTo.gameObject.SetActive(true);
-            _currentSelector = changeTo;
-        }
+        EventSystem.current.SetSelectedGameObject(null);
+        EventSystem.current.SetSelectedGameObject(selected);
     }
-    public void OnMouseEnterSelectable(RectTransform selectThis)
-    {
-        _currentSelector.Select(selectThis);
-    } 
+
+    
     public void OnPlayButtonClick()
     {
         SoundManager.Instance.Click();
         menuPanel.DOLocalMoveX(-2000, 0.5f);
         levelPanel.DOLocalMoveX(-135, 0.5f);
-        ChangeSelector(levelSelector);
+        ChangeSelected(levelFirstSelected);
     }
     public void OnPlayBackButtonClick()
     {
         SoundManager.Instance.Click();
-        ChangeSelector(menuSelector);
-        levelPanel.DOLocalMoveX(-2000, 0.5f);
+        levelPanel.DOLocalMoveX(2000, 0.5f);
         menuPanel.DOLocalMoveX(-135, 0.5f);
+        ChangeSelected(menuFirstSelected);
+
     }
     public void OnOptionsButtonClick()
     {
         SoundManager.Instance.Click();
-        ChangeSelector(optionsSelector);
         menuPanel.DOLocalMoveX(-2000, 0.5f);
-        optionsPanel.DOLocalMoveX(-135, 0.5f);
+        optionsPanel.DOLocalMoveY(0, 0.5f);
+        ChangeSelected(optionsFirstSelected);
+
     }
     public void OnOptionsBackButtonClick()
     {
         SoundManager.Instance.Click();
-        optionsPanel.DOLocalMoveX(-2000, 0.5f);
+        optionsPanel.DOLocalMoveY(2000, 0.5f);
         menuPanel.DOLocalMoveX(-135, 0.5f);
-        ChangeSelector(menuSelector);
+        ChangeSelected(menuFirstSelected);
     }
     public void OnQuitButtonClick()
     {
         SoundManager.Instance.Click();
-        ChangeSelector(quitSelector);
         menuPanel.DOLocalMoveX(-2000, 0.5f);
-        quitPanel.DOLocalMoveX(-135, 0.5f);
+        quitPanel.DOLocalMoveY(0, 0.5f);
+        ChangeSelected(quitFirstSeleted);
     }
     public void OnQuitBackButtonClick()
     {
         SoundManager.Instance.Click();
-        ChangeSelector(menuSelector);
-        quitPanel.DOLocalMoveX(-2000, 0.5f);
+        quitPanel.DOLocalMoveY(-2000, 0.5f);
         menuPanel.DOLocalMoveX(-135, 0.5f);
+        ChangeSelected(menuFirstSelected);
     }
     public void OnQuitAcceptButtonClick()
     {
@@ -106,6 +98,10 @@ public class MenuUI: MonoBehaviour
     public void OnEffectsVolumeChange(Single value)
     {
         SoundManager.Instance.SetEffectsVolume(value);
+    }
+    public void OnToggleValueChange(bool change)
+    {
+        PlayerPrefs.SetInt("InputType", change?1:0);
     }
     private void DistortionDecrease(float value, float duration, string levelName)
     {
